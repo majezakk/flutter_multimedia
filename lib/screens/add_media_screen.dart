@@ -18,70 +18,105 @@ class _AddMediaScreenState extends State<AddMediaScreen> {
   final TextEditingController _audioUrlController = TextEditingController();
 
   Future<void> _addImage() async {
-    final XFile? file = await MediaService.pickImage();
-    if (file != null) {
-      LocationData? locationData = await LocationService.getLocation();
-      MediaModel media = MediaModel(
-        id: const Uuid().v4(),
-        mediaType: MediaType.photo,
-        path: file.path,
-        date: DateTime.now(),
-        latitude: locationData?.latitude,
-        longitude: locationData?.longitude,
+    try {
+      final XFile? file = await MediaService.pickImage();
+      if (file != null) {
+        LocationData? locationData = await LocationService.getLocation();
+        MediaModel media = MediaModel(
+          id: const Uuid().v4(),
+          mediaType: MediaType.photo,
+          path: file.path,
+          date: DateTime.now(),
+          latitude: locationData?.latitude,
+          longitude: locationData?.longitude,
+        );
+        await DatabaseService.addMedia(media);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Фото успешно загружено!')),
+        );
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Ошибка загрузки фото: $e')),
       );
-      await DatabaseService.addMedia(media);
-      Navigator.pop(context);
     }
   }
 
   Future<void> _addVideo() async {
-    final XFile? file = await MediaService.pickVideo();
-    if (file != null) {
-      LocationData? locationData = await LocationService.getLocation();
-      MediaModel media = MediaModel(
-        id: const Uuid().v4(),
-        mediaType: MediaType.video,
-        path: file.path,
-        date: DateTime.now(),
-        latitude: locationData?.latitude,
-        longitude: locationData?.longitude,
+    try {
+      final XFile? file = await MediaService.pickVideo();
+      if (file != null) {
+        LocationData? locationData = await LocationService.getLocation();
+        MediaModel media = MediaModel(
+          id: const Uuid().v4(),
+          mediaType: MediaType.video,
+          path: file.path,
+          date: DateTime.now(),
+          latitude: locationData?.latitude,
+          longitude: locationData?.longitude,
+        );
+        await DatabaseService.addMedia(media);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Видео успешно загружено!')),
+        );
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Ошибка загрузки видео: $e')),
       );
-      await DatabaseService.addMedia(media);
-      Navigator.pop(context);
     }
   }
 
   Future<void> _addAudioUrl() async {
     if (_audioUrlController.text.isNotEmpty) {
-      LocationData? locationData = await LocationService.getLocation();
-      MediaModel media = MediaModel(
-        id: const Uuid().v4(),
-        mediaType: MediaType.audio,
-        path: _audioUrlController.text.trim(),
-        date: DateTime.now(),
-        latitude: locationData?.latitude,
-        longitude: locationData?.longitude,
-      );
-      await DatabaseService.addMedia(media);
-      Navigator.pop(context);
+      try {
+        LocationData? locationData = await LocationService.getLocation();
+        MediaModel media = MediaModel(
+          id: const Uuid().v4(),
+          mediaType: MediaType.audio,
+          path: _audioUrlController.text.trim(),
+          date: DateTime.now(),
+          latitude: locationData?.latitude,
+          longitude: locationData?.longitude,
+        );
+        await DatabaseService.addMedia(media);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Аудио успешно загружено!')),
+        );
+        Navigator.pop(context);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ошибка загрузки аудио: $e')),
+        );
+      }
     }
   }
 
   Future<void> _addLocalAudio() async {
-    final String? audioPath = await MediaService.pickAudio();
-    if (audioPath != null) {
-      // Получаем текущее местоположение устройства
-      LocationData? locationData = await LocationService.getLocation();
-      MediaModel media = MediaModel(
-        id: const Uuid().v4(),
-        mediaType: MediaType.audio,
-        path: audioPath,
-        date: DateTime.now(),
-        latitude: locationData?.latitude,
-        longitude: locationData?.longitude,
+    try {
+      final String? audioPath = await MediaService.pickAudio();
+      if (audioPath != null) {
+        LocationData? locationData = await LocationService.getLocation();
+        MediaModel media = MediaModel(
+          id: const Uuid().v4(),
+          mediaType: MediaType.audio,
+          path: audioPath,
+          date: DateTime.now(),
+          latitude: locationData?.latitude,
+          longitude: locationData?.longitude,
+        );
+        await DatabaseService.addMedia(media);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Локальное аудио успешно загружено!')),
+        );
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Ошибка загрузки аудио: $e')),
       );
-      await DatabaseService.addMedia(media);
-      Navigator.pop(context);
     }
   }
 
@@ -97,7 +132,7 @@ class _AddMediaScreenState extends State<AddMediaScreen> {
       appBar: AppBar(
         title: const Text('Добавить контент'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
@@ -117,7 +152,6 @@ class _AddMediaScreenState extends State<AddMediaScreen> {
               controller: _audioUrlController,
               decoration: const InputDecoration(
                 labelText: 'URL аудио',
-                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 8),

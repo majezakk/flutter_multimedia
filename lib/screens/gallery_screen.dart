@@ -23,6 +23,7 @@ class GalleryScreen extends StatelessWidget {
             return const Center(child: Text('Нет контента'));
           }
           return ListView.builder(
+            padding: const EdgeInsets.all(8.0),
             itemCount: mediaList.length,
             itemBuilder: (context, index) {
               final media = mediaList[index];
@@ -34,8 +35,7 @@ class GalleryScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddMediaScreen()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const AddMediaScreen()));
         },
       ),
     );

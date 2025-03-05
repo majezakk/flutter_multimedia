@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'services/database_service.dart';
 import 'screens/gallery_screen.dart';
+import 'services/database_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,9 +16,19 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Multimedia',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+        ),
       ),
       home: const GalleryScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
